@@ -1,0 +1,46 @@
+********************************************************************************
+|                                                                              *
+|University of Toledo Data Science-I				   	       				   *
+|                                                                              *
+|Assignment Number:							        						   *
+|                                                                              *
+|Input File:   Date:20200424                          				       	   *	   								   *
+|                                                                              *
+ *******************************************************************************;
+ *******************************************************************************
+ * Programmer: Shyann Minnich
+ * Instructor: David Lilley, PhD
+ * Purpose: Merge Data Sets
+ *                                                           
+ *******************************************************************************;
+
+
+/* Aggregate Crime_Predictors_1990_2015 */
+libname DS 'C:\Users\mmlts\OneDrive\Documents\Spring 2020\Data Science';run;
+
+/* Read in intial file for processing */
+proc import datafile="C:\Users\mmlts\OneDrive\Documents\Spring 2020\Data Science\CPI_3.6_Abuse_Neglect_Investigations_Types_of_Abuse_-_Allegations_by_County_and_Region_FY2010-FY2019.csv"
+dbms=csv
+out=work.Allegation
+replace;
+run;
+
+proc import datafile="C:\Users\mmlts\OneDrive\Documents\Spring 2020\Data Science\CPS_3.1_Children_in_Subtitute_Care_by_Fiscal_Year_and_Region_with_Demographics_FY2010-2019.csv"
+dbms=csv
+out=work.Children
+replace;
+run;
+
+/*merge*/
+
+proc sort data=allegation; by Fiscal_Year region; run;
+proc sort data=children; by Fiscal_Year region; run;
+
+data Texas;
+merge allegation children; by Fiscal_Year Region;
+run;
+
+
+data DS.Texas;
+set Texas;
+run;
